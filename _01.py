@@ -1,0 +1,2 @@
+
+mostra("Olá mundo!")
