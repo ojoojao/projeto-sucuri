@@ -10,7 +10,7 @@ por i em faixa(0, 5):
 
 caso a:
     soma = 1 + 3
-    _soma = txt(soma/2)
+    _soma = soma/2
     mostra(soma)
     mostra(_soma)
     mostra(tipo(soma), tipo(_soma))

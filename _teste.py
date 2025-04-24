@@ -1,8 +1,8 @@
-import sys, os
+import sys, os, subprocess
 from sintaxe import a_palavras_reservadas, r_palavras_reservadas, funcoes, operadores
 from PySide6.QtCore import Qt, QEvent, QSize
 from PySide6.QtGui import QSyntaxHighlighter, QTextCharFormat, QFont, QColor
-from PySide6.QtWidgets import QApplication,  QWidget, QPushButton, QPlainTextEdit, QGridLayout, QListWidget, QFileDialog, QHBoxLayout, QVBoxLayout, QListWidgetItem
+from PySide6.QtWidgets import QApplication,  QWidget, QPushButton, QPlainTextEdit, QGridLayout, QListWidget, QFileDialog, QHBoxLayout, QVBoxLayout, QListWidgetItem, QTextEdit
 
 def transform_in_py(file_path: str):
     with open(file_path, 'r', encoding='utf-8') as suc:
@@ -47,6 +47,49 @@ def transform_in_py(file_path: str):
     py.close()
     
     return file_path
+
+def py_cmd_to_su(cmd_text: str):   
+    t = cmd_text.splitlines()
+
+    lines = []
+    for i, l in enumerate(t):
+        lines.append(l)
+
+        for k in a_palavras_reservadas.keys():
+            if a_palavras_reservadas[k] in lines[i]:
+                lines[i] = str(lines[i]).replace(a_palavras_reservadas[k], k)
+        
+        for k in r_palavras_reservadas.keys():
+            if r_palavras_reservadas[k] in lines[i]:
+                lines[i] = str(lines[i]).replace(r_palavras_reservadas[k], k)
+        
+        for k in funcoes.keys():
+            if funcoes[k] in lines[i]:
+                lines[i] = str(lines[i]).replace(funcoes[k], k)
+
+    text = ""
+    for l in lines:
+        text += l + "\n"
+
+    return text
+
+def run_script(file_path):
+    command = f"python {file_path}" # Replace your_script.py with the actual script name.
+    process = subprocess.run(command, capture_output=True, text=True, shell=True, encoding="utf-8")
+
+    output = process.stdout
+    error = process.stderr
+
+    if process.returncode == 0:
+        print("Command executed successfully:")
+        print(output)
+
+        su_output = py_cmd_to_su(output)
+        return su_output
+    else:
+        print(f"Command failed with error code {process.returncode}:")
+        print(error)
+        return f"Erro ao executar arquivo... {output}"
 
 class PythonHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
@@ -119,7 +162,7 @@ class MainWindow(QWidget):
 
         self.list_widget = QListWidget()
 
-        self.terminal = QListWidget()
+        self.terminal = QTextEdit()
 
         self.run_code_button = QPushButton()
 
@@ -139,9 +182,11 @@ class MainWindow(QWidget):
         self.list_widget.clicked.connect(self.open_file) 
 
         self.terminal.setMaximumHeight(250)
+        self.terminal.setDisabled(True)
 
         self.run_code_button.setMaximumWidth(100)
         self.run_code_button.setText("Rodar")
+        self.run_code_button.clicked.connect(self.run_code)
 
         self.open_path_button.setText("Abri pasta")
         self.open_path_button.clicked.connect(self.list_files)
@@ -161,10 +206,7 @@ class MainWindow(QWidget):
         hlyt = QHBoxLayout()
         hlyt.addWidget(self.create_file_button)
         hlyt.addWidget(self.save_file_button)
-        #hlyt.addStretch()
-        #hlyt.addWidget(self.run_code_button)
         
-
         vlyt = QVBoxLayout()
         vlyt.addWidget(self.plain_text)
         vlyt.addWidget(self.terminal)
@@ -244,6 +286,17 @@ class MainWindow(QWidget):
                 su.write(data)
 
         transform_in_py(self.file_path)
+
+    def run_code(self):
+        file = self.list_widget.currentItem()
+        file = file.text()
+        file = file.replace(".su", ".py")
+
+        file_path = self.selected_path+"/run_files/"+file
+        print(file_path)
+        cmd = run_script(file_path)
+
+        self.terminal.setPlainText(cmd)
 
 
 if __name__ == "__main__":
