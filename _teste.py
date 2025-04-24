@@ -163,7 +163,7 @@ class MainWindow(QWidget):
 
         self.list_widget = QListWidget()
 
-        self.terminal = QTextEdit()
+        self.terminal = QPlainTextEdit()
 
         self.run_code_button = QPushButton()
 
@@ -183,7 +183,7 @@ class MainWindow(QWidget):
         self.list_widget.clicked.connect(self.open_file) 
 
         self.terminal.setMaximumHeight(250)
-        self.terminal.setDisabled(True)
+        self.terminal.setReadOnly(True)
 
         self.run_code_button.setMaximumWidth(100)
         self.run_code_button.setText("Rodar")
@@ -237,7 +237,8 @@ class MainWindow(QWidget):
         files_list = []
         for file in files:
             if os.path.isfile(file):
-                files_list.append(file)
+                if file.find(".su") != -1:
+                    files_list.append(file)
 
         self.list_widget.addItems(files_list)
 
