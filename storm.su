@@ -1,0 +1,9 @@
+t = "C:/Users/jluca/Documents/python/sucuri"
+
+mostra("Caminho original:", t)
+por i, l em enumera(t[::-1]):
+    caso l == '/':       
+        t = t[::-1][i:][::-1]
+        quebra
+
+mostra("Caminho novo:", t)

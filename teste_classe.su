@@ -1,0 +1,25 @@
+de datetime importa datetime
+
+classe TesteCriaArquivo():
+    def __init__(self):
+        self.data = datetime.strftime(datetime.today(), "%d%m%Y %H%M%S")
+
+    def cria_arquivo(self, nome: txt):
+        nome = nome + self.data + ".txt"
+        com abre(nome, "w", encoding='utf-8') como arquivo:
+            arquivo.write("Olá mundo do arquivo criado pela classezinha sucuri")
+        arquivo.close()
+
+        retorna nome
+
+caso __name__ == "__main__":
+
+    pasta = "C:/Users/jluca/Documents/python/sucuri/"
+        
+    teste = TesteCriaArquivo()
+    nome = teste.cria_arquivo(pasta+"testeSucuri ")
+
+    mostra(nome)
+
+ 
+        
