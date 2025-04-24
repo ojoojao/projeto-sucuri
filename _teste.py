@@ -1,8 +1,8 @@
 import sys, os
 from sintaxe import a_palavras_reservadas, r_palavras_reservadas, funcoes, operadores
-from PySide6.QtCore import Qt, QEvent
+from PySide6.QtCore import Qt, QEvent, QSize
 from PySide6.QtGui import QSyntaxHighlighter, QTextCharFormat, QFont, QColor
-from PySide6.QtWidgets import QApplication,  QWidget, QPushButton, QPlainTextEdit, QGridLayout, QListWidget, QFileDialog, QHBoxLayout, QListWidgetItem
+from PySide6.QtWidgets import QApplication,  QWidget, QPushButton, QPlainTextEdit, QGridLayout, QListWidget, QFileDialog, QHBoxLayout, QVBoxLayout, QListWidgetItem
 
 def transform_in_py(file_path: str):
     with open(file_path, 'r', encoding='utf-8') as suc:
@@ -119,6 +119,10 @@ class MainWindow(QWidget):
 
         self.list_widget = QListWidget()
 
+        self.terminal = QListWidget()
+
+        self.run_code_button = QPushButton()
+
         self.save_file_button = QPushButton()
 
         self.open_path_button = QPushButton()
@@ -134,13 +138,20 @@ class MainWindow(QWidget):
         self.list_widget.setMaximumWidth(200)
         self.list_widget.clicked.connect(self.open_file) 
 
+        self.terminal.setMaximumHeight(250)
+
+        self.run_code_button.setMaximumWidth(100)
+        self.run_code_button.setText("Rodar")
+
         self.open_path_button.setText("Abri pasta")
         self.open_path_button.clicked.connect(self.list_files)
 
         self.save_file_button.setText("Salvar")
+        self.save_file_button.setMaximumWidth(200)
         self.save_file_button.clicked.connect(self.save)
         
         self.create_file_button.setText("Novo")
+        self.create_file_button.setMaximumWidth(200)
         self.create_file_button.clicked.connect(self.novo)
 
     def set_layout(self):
@@ -150,11 +161,20 @@ class MainWindow(QWidget):
         hlyt = QHBoxLayout()
         hlyt.addWidget(self.create_file_button)
         hlyt.addWidget(self.save_file_button)
+        #hlyt.addStretch()
+        #hlyt.addWidget(self.run_code_button)
+        
+
+        vlyt = QVBoxLayout()
+        vlyt.addWidget(self.plain_text)
+        vlyt.addWidget(self.terminal)
 
         lyt.addWidget(self.open_path_button, 0, 0)
+        lyt.addWidget(self.run_code_button, 0, 1, alignment=Qt.AlignmentFlag.AlignRight)
         lyt.addWidget(self.list_widget, 1, 0)
+        lyt.addLayout(vlyt, 1, 1)
         lyt.addLayout(hlyt, 2, 0)
-        lyt.addWidget(self.plain_text, 1, 1)
+        
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.Type.KeyPress and obj is self.plain_text:
