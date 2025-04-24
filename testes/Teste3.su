@@ -1,4 +1,0 @@
-a = 1
-
-caso a == 1:
-    mostra(a)
