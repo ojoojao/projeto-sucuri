@@ -4,6 +4,50 @@ from PySide6.QtCore import Qt, QEvent
 from PySide6.QtGui import QSyntaxHighlighter, QTextCharFormat, QFont, QColor
 from PySide6.QtWidgets import QApplication,  QWidget, QPushButton, QPlainTextEdit, QGridLayout, QListWidget, QFileDialog, QHBoxLayout, QListWidgetItem
 
+def transform_in_py(file_path: str):
+    with open(file_path, 'r', encoding='utf-8') as suc:
+        t = suc.readlines()
+    suc.close()
+
+    lines = []
+    for i, l in enumerate(t):
+        lines.append(l)
+
+        for k in a_palavras_reservadas.keys():
+            if k in lines[i]:
+                lines[i] = str(lines[i]).replace(k, a_palavras_reservadas[k])
+        
+        for k in r_palavras_reservadas.keys():
+            if k in lines[i]:
+                lines[i] = str(lines[i]).replace(k, r_palavras_reservadas[k])
+        
+        for k in funcoes.keys():
+            if k in lines[i]:
+                lines[i] = str(lines[i]).replace(k, funcoes[k])
+
+    text = ""
+    for l in lines:
+        text += l
+    
+    i = file_path[::-1].find("/")
+    file = file_path[::-1][:i][::-1]
+    i = file_path.find(file)
+    path = file_path[:i]
+    path = path + "run_files/"
+    
+    file = file.replace(".su", ".py")
+
+    file_path = path + file
+
+    if not os.path.exists(path):
+        os.makedirs(path)   
+
+    with open(file_path, 'w', encoding='utf-8') as py:
+        py.write(text)
+    py.close()
+    
+    return file_path
+
 class PythonHighlighter(QSyntaxHighlighter):
     def __init__(self, document):
         super().__init__(document)
@@ -125,16 +169,21 @@ class MainWindow(QWidget):
         
     def list_files(self):
         self.selected_path = QFileDialog.getExistingDirectory(self, "Selecionar pasta")
-        self.files = os.listdir(self.selected_path)
+        files = os.listdir(self.selected_path)
 
-        self.list_widget.addItems(self.files)
+        files_list = []
+        for file in files:
+            if os.path.isfile(file):
+                files_list.append(file)
+
+        self.list_widget.addItems(files_list)
 
     def open_file(self):
         file = self.list_widget.currentItem()
         file = file.text()
 
         if os.path.isfile(file):
-            self.file_path = self.selected_path+"\\"+file
+            self.file_path = self.selected_path+"/"+file
             with open(self.file_path, "r", encoding="utf-8") as su:
                 su_data = su.read()
                 print(su_data)
@@ -170,10 +219,11 @@ class MainWindow(QWidget):
         if os.path.isfile(file):
             data = self.plain_text.toPlainText()
 
-            self.file_path = self.selected_path+"\\"+file
+            self.file_path = self.selected_path+"/"+file
             with open(self.file_path, "w", encoding="utf-8") as su:
                 su.write(data)
 
+        transform_in_py(self.file_path)
 
 
 if __name__ == "__main__":
