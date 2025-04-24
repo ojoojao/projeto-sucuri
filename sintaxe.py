@@ -1,13 +1,19 @@
-palavras_reservadas = {
+a_palavras_reservadas = {
     'Falso'      : 'False',
     'Nada'       : 'None',
     'Verdade'    : 'True',
     ' tambem '     : ' and ',
+    ' ou '         : ' or ',
+    'classe '      : 'class',
+    ' nao '        : ' not ',
+    'def '       : 'def ',
+    ' e '         : ' is ',
+}
+
+r_palavras_reservadas = {
     ' como '       : ' as ',
     'quebra'     : 'break',
-    'classe '      : 'class',
     'continua'   : 'continue',
-    'def '       : 'def ',
     'del'        : 'del',
     'oucaso'     : 'elif',
     'senao:'       : 'else:',
@@ -19,9 +25,6 @@ palavras_reservadas = {
     'caso'       : 'if',
     'importa '    : 'import ',
     ' em '        : ' in ',
-    ' e '         : ' is ',
-    ' nao '        : ' not ',
-    ' ou '         : ' or ',
     'passa'      : 'pass',
     'projeta'    : 'raise',
     'retorna '    : 'return ',
