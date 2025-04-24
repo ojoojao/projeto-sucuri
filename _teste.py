@@ -1,5 +1,5 @@
 import sys, os
-from sintaxe import a_palavras_reservadas, r_palavras_reservadas, funcoes
+from sintaxe import a_palavras_reservadas, r_palavras_reservadas, funcoes, operadores
 from PySide6.QtCore import Qt, QEvent
 from PySide6.QtGui import QSyntaxHighlighter, QTextCharFormat, QFont, QColor
 from PySide6.QtWidgets import QApplication,  QWidget, QPushButton, QPlainTextEdit, QGridLayout, QListWidget, QFileDialog, QHBoxLayout, QListWidgetItem
@@ -31,6 +31,13 @@ class PythonHighlighter(QSyntaxHighlighter):
                 length = len(keyword)
                 self.setFormat(index, length, self.yellow)
                 index = text.find(keyword, index + length)
+
+        for keyword in self.op_w:
+            index = text.find(keyword)
+            while index >= 0:
+                length = len(keyword)
+                self.setFormat(index, length, self.op)
+                index = text.find(keyword, index + length)
     
     def words(self):
         self.blue = QTextCharFormat()
@@ -47,12 +54,11 @@ class PythonHighlighter(QSyntaxHighlighter):
         self.yellow.setForeground(QColor("yellow"))
         self.yellow.setFontWeight(QFont.Bold)
         self.yellow_w = list(funcoes.keys())
-        self.yellow_w.append("[")
-        self.yellow_w.append("]")
-        self.yellow_w.append("{")
-        self.yellow_w.append("}")
-        self.yellow_w.append("(")
-        self.yellow_w.append(")")
+        
+        self.op = QTextCharFormat()
+        self.op.setForeground(QColor("darkGreen"))
+        self.op.setFontWeight(QFont.Bold)
+        self.op_w = operadores
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -88,6 +94,7 @@ class MainWindow(QWidget):
         self.open_path_button.clicked.connect(self.list_files)
 
         self.save_file_button.setText("Salvar")
+        self.save_file_button.clicked.connect(self.save)
         
         self.create_file_button.setText("Novo")
         self.create_file_button.clicked.connect(self.novo)
@@ -129,9 +136,11 @@ class MainWindow(QWidget):
         if os.path.isfile(file):
             self.file_path = self.selected_path+"\\"+file
             with open(self.file_path, "r", encoding="utf-8") as su:
-                su_data = su.readlines()
+                su_data = su.read()
                 print(su_data)
             su.close()
+
+            self.plain_text.setPlainText(su_data)
 
     def novo(self):
         created_file = QFileDialog.getSaveFileName(self, "Criar arquivo")
@@ -154,12 +163,17 @@ class MainWindow(QWidget):
 
         self.open_file()
 
-
-
     def save(self):
-        pass
+        file = self.list_widget.currentItem()
+        file = file.text()
 
-        
+        if os.path.isfile(file):
+            data = self.plain_text.toPlainText()
+
+            self.file_path = self.selected_path+"\\"+file
+            with open(self.file_path, "w", encoding="utf-8") as su:
+                su.write(data)
+
 
 
 if __name__ == "__main__":
