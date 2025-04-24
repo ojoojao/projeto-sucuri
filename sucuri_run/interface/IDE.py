@@ -54,7 +54,7 @@ class MainWindow(QWidget):
         PythonHighlighter(self.plain_text_code.document())
 
         self.plain_text_terminal.setMaximumHeight(250)
-
+        
     def set_layout(self):
         hlyt = QHBoxLayout()
         hlyt.addWidget(self.create_file_button)
@@ -163,6 +163,9 @@ class MainWindow(QWidget):
 
         self.plain_text_terminal.setReadOnly(True)
         self.plain_text_terminal.setPlainText(self.cmd)
+
+        sb = self.plain_text_terminal.verticalScrollBar()
+        sb.setValue(sb.maximum())
     
 
 if __name__ == "__main__":

@@ -1,5 +1,10 @@
-mostra(1, 2, 3)
+mostra("testando sucuri")
 
 a = 1
 caso a == 1:
-    mostra(a)
+    mostra("ola mundo")
+
+por i em faixa(0, 5):
+    mostra(i+1)
+
+mostra("aaaaaaaaa")
