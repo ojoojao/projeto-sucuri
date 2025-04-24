@@ -1,16 +1,5 @@
-mostra("Olá mundo!")
+mostra(1, 2, 3)
 
-a = Verdade
-
-caso a == Verdade:
+a = 1
+caso a == 1:
     mostra(a)
-
-por i em faixa(0, 5):
-    mostra(tipo(i))
-
-caso a:
-    soma = 1 + 3
-    _soma = soma/2
-    mostra(soma)
-    mostra(_soma)
-    mostra(tipo(soma), tipo(_soma))
