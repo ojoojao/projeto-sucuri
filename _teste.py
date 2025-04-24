@@ -40,7 +40,8 @@ def transform_in_py(file_path: str):
     file_path = path + file
 
     if not os.path.exists(path):
-        os.makedirs(path)   
+        os.makedirs(path)  
+        os.system(f'attrib +h "{path[:-1]}"') 
 
     with open(file_path, 'w', encoding='utf-8') as py:
         py.write(text)
@@ -292,12 +293,14 @@ class MainWindow(QWidget):
         file = file.text()
         file = file.replace(".su", ".py")
 
+        self.save()
+
         file_path = self.selected_path+"/run_files/"+file
         print(file_path)
         cmd = run_script(file_path)
 
         self.terminal.setPlainText(cmd)
-
+    
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
